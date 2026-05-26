@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+ 
+  <main>
+    <div class="container">
+ 
+      <header>
+        <h1>Expense Tracker</h1>
+      </header>
+ 
+      <section class="stats-grid">
+        <div class="stat-card highlight">
+          <div class="stat-top"><span>Total Spent</span></div>
+          <div class="stat-value">₹{{ "%.2f"|format(total) }}</div>
+          <div class="stat-glow"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span>Transactions</span></div>
+          <div class="stat-value">{{ expenses|length }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><span>Average</span></div>
+          <div class="stat-value">
+            {% if expenses|length > 0 %}
+              ₹{{ "%.2f"|format(total / expenses|length) }}
+            {% else %}
+              ₹0.00
+            {% endif %}
+          </div>
+        </div>
+      </section>
+ 
+      <section class="form-card">
+        <form action="/add" method="post" class="expense-form">
+          <div class="field">
+            <input type="text" name="title" placeholder="Expense title" required />
+          </div>
+          <div class="field field--prefix">
+            <span class="prefix">₹</span>
+            <input type="number" step="0.01" min="0" name="amount" placeholder="Amount" required />
+          </div>
+          <div class="field">
+            <input type="text" name="category" placeholder="Category" required />
+          </div>
+          <button type="submit" class="btn-add">+ Add</button>
+        </form>
+      </section>
+ 
+      <section class="list-card">
+        <div class="list-header">
+          <span>Title</span>
+          <span>Amount</span>
+          <span>Category</span>
+          <span class="text-right">Action</span>
+        </div>
+ 
+        {% if expenses|length == 0 %}
+          <div class="empty-state">
+  
+            <p>No expenses yet. Add your first one above.</p>
+          </div>
+        {% else %}
+          <ul class="expense-list">
+            {% for expense in expenses %}
+            <li class="expense-row">
+              <span class="expense-title">{{ expense.title }}</span>
+              <span class="expense-amount">₹{{ "%.2f"|format(expense.amount) }}</span>
+              <span><span class="category-badge">{{ expense.category }}</span></span>
+              <a href="/delete/{{ expense.id }}" class="btn-delete">Delete</a>
+            </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </section>
+ 
+      <footer></footer>
+ 
+    </div>
+  </main>
+ 
+</body>
+</html>
